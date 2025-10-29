@@ -1,0 +1,40 @@
+# Source files
+src/
+*.ts
+tsconfig.json
+
+# Java source files
+java-utils/src/
+java-utils/pom.xml
+java-utils/.mvn/
+java-utils/.classpath
+java-utils/.project
+java-utils/.settings/
+
+# Build artifacts (keep only the built JAR)
+java-utils/target/classes/
+java-utils/target/generated-sources/
+java-utils/target/maven-archiver/
+java-utils/target/maven-status/
+java-utils/target/original-*.jar
+
+# Development files
+example.js
+.env*
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Git
+.git/
+.gitignore
+
+# Test files
+tests/
+__tests__/
+*.test.*
+*.spec.*
+
