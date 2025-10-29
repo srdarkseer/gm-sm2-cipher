@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  gm-sm2-cipher:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gm-sm2-cipher:latest
+    container_name: gm-sm2-cipher
+    working_dir: /app
+    volumes:
+      # Mount source code for development (optional)
+      - ./src:/app/src:ro
+      - ./example.js:/app/example.js:ro
+      # Mount built lib if you want to test without rebuilding
+      - ./lib:/app/lib:rw
+    environment:
+      - NODE_ENV=production
+    # Keep container running for interactive use
+    stdin_open: true
+    tty: true
+    # Override default command to keep container running
+    command: tail -f /dev/null
+
+  # Service for running the example
+  gm-sm2-cipher-example:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gm-sm2-cipher:latest
+    container_name: gm-sm2-cipher-example
+    working_dir: /app
+    volumes:
+      - ./example.js:/app/example.js:ro
+      - ./lib:/app/lib:ro
+    environment:
+      - NODE_ENV=production
+    command: node example.js
+    profiles:
+      - example
+
