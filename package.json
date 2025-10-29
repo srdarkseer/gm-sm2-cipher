@@ -9,8 +9,27 @@
     "build:java": "cd java-utils && mvn clean package",
     "build:typescript": "tsc",
     "prepublishOnly": "npm run build",
-    "test": "node lib/index.js --test",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:verbose": "jest --verbose",
     "clean": "rm -rf lib java-utils/target"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": ["<rootDir>/src"],
+    "testMatch": ["**/__tests__/**/*.ts", "**/?(*.)+(spec|test).ts"],
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts",
+      "!src/**/__tests__/**"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["text", "lcov", "html"]
   },
   "keywords": [
     "sm2",
@@ -34,7 +53,10 @@
     "node": ">=14.0.0"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.4.5",
     "typescript": "^5.2.2"
   },
   "repository": {
@@ -42,4 +64,3 @@
     "url": ""
   }
 }
-
