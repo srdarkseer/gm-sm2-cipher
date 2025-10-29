@@ -1,5 +1,7 @@
 # gm-sm2-cipher
 
+**Package Name:** `gm-sm2-cipher`
+
 A Node.js package for SM2 encryption and decryption using Java with BouncyCastle library. This package provides a TypeScript/JavaScript wrapper around a Java-based SM2 cryptographic service.
 
 ## Features
@@ -27,6 +29,62 @@ Or install from local directory:
 
 ```bash
 npm install /path/to/gm-sm2-cipher
+```
+
+## Docker Support
+
+The project includes Docker support for easy deployment and development.
+
+### Building Docker Image
+
+```bash
+# Build the Docker image
+docker build -t gm-sm2-cipher:latest .
+```
+
+### Running with Docker
+
+```bash
+# Run the container interactively
+docker run -it --rm gm-sm2-cipher:latest
+
+# Run with mounted volumes for development
+docker run -it --rm \
+  -v $(pwd)/src:/app/src:ro \
+  -v $(pwd)/example.js:/app/example.js:ro \
+  -v $(pwd)/lib:/app/lib:rw \
+  gm-sm2-cipher:latest
+```
+
+### Using Docker Compose
+
+```bash
+# Build and start the service
+docker-compose up -d
+
+# Run the example
+docker-compose --profile example run --rm gm-sm2-cipher-example
+
+# Access the container shell
+docker-compose exec gm-sm2-cipher /bin/bash
+
+# Stop the services
+docker-compose down
+```
+
+### Docker Development Workflow
+
+```bash
+# 1. Build the image
+docker build -t gm-sm2-cipher:latest .
+
+# 2. Run the container
+docker run -it --rm gm-sm2-cipher:latest /bin/bash
+
+# 3. Inside the container, you can:
+#    - Run the example: node example.js
+#    - Use Node.js REPL: node
+#    - Test encryption/decryption with your own code
 ```
 
 ## Building from Source
@@ -241,7 +299,29 @@ npm publish
 
 ## License
 
-MIT
+**License:** MIT
+
+Copyright (c) 2024
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+See [LICENSE](./LICENSE) file for the full license text.
 
 ## Contributing
 
