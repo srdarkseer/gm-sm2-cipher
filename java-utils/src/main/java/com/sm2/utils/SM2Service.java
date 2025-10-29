@@ -7,6 +7,7 @@ import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.util.encoders.Hex;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 
@@ -63,6 +64,37 @@ public class SM2Service {
             return Hex.toHexString(encryptedBytes);
         } catch (Exception e) {
             throw new RuntimeException("SM2 encryption failed: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Decrypt SM2 encrypted data using C1C3C2 mode first, with fallback to C1C2C3
+     */
+    public String decrypt(String cipherData) {
+        try {
+            byte[] cipherDataByte = Hex.decode(cipherData);
+            BigInteger privateKeyD = new BigInteger(privateKey, 16);
+            ECPrivateKeyParameters privateKeyParameters = new ECPrivateKeyParameters(privateKeyD, ecDomainParameters);
+            
+            // Try C1C3C2 mode first (most common)
+            try {
+                SM2Engine sm2Engine = new SM2Engine(SM2Engine.Mode.C1C3C2);
+                sm2Engine.init(false, privateKeyParameters);
+                byte[] arrayOfBytes = sm2Engine.processBlock(cipherDataByte, 0, cipherDataByte.length);
+                return new String(arrayOfBytes, StandardCharsets.UTF_8);
+            } catch (Exception e1) {
+                // Fallback to C1C2C3 mode if C1C3C2 fails
+                try {
+                    SM2Engine sm2Engine = new SM2Engine(SM2Engine.Mode.C1C2C3);
+                    sm2Engine.init(false, privateKeyParameters);
+                    byte[] arrayOfBytes = sm2Engine.processBlock(cipherDataByte, 0, cipherDataByte.length);
+                    return new String(arrayOfBytes, StandardCharsets.UTF_8);
+                } catch (Exception e2) {
+                    throw new RuntimeException("SM2 decryption failed with both C1C3C2 and C1C2C3 modes: " + e2.getMessage(), e2);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("SM2 decryption failed: " + e.getMessage(), e);
         }
     }
 }
