@@ -1,0 +1,45 @@
+{
+  "name": "sm2-java-utils",
+  "version": "1.0.0",
+  "description": "SM2 encryption and decryption utilities using Java with BouncyCastle",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "npm run build:java && npm run build:typescript",
+    "build:java": "cd java-utils && mvn clean package",
+    "build:typescript": "tsc",
+    "prepublishOnly": "npm run build",
+    "test": "node lib/index.js --test",
+    "clean": "rm -rf lib java-utils/target"
+  },
+  "keywords": [
+    "sm2",
+    "encryption",
+    "decryption",
+    "cryptography",
+    "bouncycastle",
+    "java",
+    "chinese-crypto"
+  ],
+  "author": "",
+  "license": "MIT",
+  "files": [
+    "lib",
+    "java-utils/target/sm2-service-1.0.0.jar",
+    "java-utils/pom.xml",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}
+
