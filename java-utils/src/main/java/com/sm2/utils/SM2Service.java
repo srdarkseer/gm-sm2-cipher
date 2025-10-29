@@ -2,7 +2,9 @@ package com.sm2.utils;
 
 import org.bouncycastle.asn1.gm.GMNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.engines.SM2Engine;
+import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
 import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.util.encoders.Hex;
@@ -95,6 +97,37 @@ public class SM2Service {
             }
         } catch (Exception e) {
             throw new RuntimeException("SM2 decryption failed: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Generate SM2 key pair
+     * @return Array with [privateKey (hex), publicKey (hex)]
+     */
+    public static String[] generateKeyPair() {
+        try {
+            ECKeyPairGenerator keyPairGenerator = new ECKeyPairGenerator();
+            ECKeyGenerationParameters keyGenParams = new ECKeyGenerationParameters(ecDomainParameters, new SecureRandom());
+            keyPairGenerator.init(keyGenParams);
+            
+            AsymmetricCipherKeyPair keyPair = keyPairGenerator.generateKeyPair();
+            
+            // Extract private key
+            ECPrivateKeyParameters privateKeyParams = (ECPrivateKeyParameters) keyPair.getPrivate();
+            String privateKey = privateKeyParams.getD().toString(16);
+            // Pad private key to 64 hex chars if needed
+            while (privateKey.length() < 64) {
+                privateKey = "0" + privateKey;
+            }
+            
+            // Extract public key
+            ECPublicKeyParameters publicKeyParams = (ECPublicKeyParameters) keyPair.getPublic();
+            byte[] publicKeyBytes = publicKeyParams.getQ().getEncoded(false);
+            String publicKey = Hex.toHexString(publicKeyBytes);
+            
+            return new String[]{privateKey, publicKey};
+        } catch (Exception e) {
+            throw new RuntimeException("SM2 key pair generation failed: " + e.getMessage(), e);
         }
     }
 }
