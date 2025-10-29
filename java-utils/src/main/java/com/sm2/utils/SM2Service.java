@@ -130,5 +130,69 @@ public class SM2Service {
             throw new RuntimeException("SM2 key pair generation failed: " + e.getMessage(), e);
         }
     }
+    
+    /**
+     * Main method to handle command-line arguments
+     */
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            System.err.println("Usage:");
+            System.err.println("  java SM2Service --test");
+            System.err.println("  java SM2Service --generate-keypair");
+            System.err.println("  java SM2Service --encrypt <plaintext> --public-key <publicKey>");
+            System.err.println("  java SM2Service --decrypt <encryptedData> --private-key <privateKey>");
+            System.exit(1);
+        }
+
+        if (args.length == 1 && "--test".equals(args[0])) {
+            System.out.println("SM2 Encryption/Decryption Service is available");
+            System.exit(0);
+        }
+
+        // Key pair generation
+        if (args.length == 1 && "--generate-keypair".equals(args[0])) {
+            try {
+                String[] keyPair = generateKeyPair();
+                System.out.println("Private Key: " + keyPair[0]);
+                System.out.println("Public Key: " + keyPair[1]);
+            } catch (Exception e) {
+                System.err.println("Key generation failed: " + e.getMessage());
+                System.exit(1);
+            }
+        }
+
+        // Encryption
+        if (args.length == 4 && "--encrypt".equals(args[0]) && "--public-key".equals(args[2])) {
+            String plaintext = args[1];
+            String publicKey = args[3];
+            
+            try {
+                SM2Service service = new SM2Service(null, publicKey);
+                String result = service.encrypt(plaintext, publicKey);
+                System.out.println(result);
+            } catch (Exception e) {
+                System.err.println("Encryption failed: " + e.getMessage());
+                System.exit(1);
+            }
+        } 
+        // Decryption
+        else if (args.length == 4 && "--decrypt".equals(args[0]) && "--private-key".equals(args[2])) {
+            String encryptedData = args[1];
+            String privateKey = args[3];
+            
+            try {
+                SM2Service service = new SM2Service(privateKey);
+                String result = service.decrypt(encryptedData);
+                System.out.println(result);
+            } catch (Exception e) {
+                System.err.println("Decryption failed: " + e.getMessage());
+                System.exit(1);
+            }
+        } else {
+            System.err.println("Invalid arguments.");
+            System.err.println("Use --test, --encrypt <plaintext> --public-key <key>, or --decrypt <data> --private-key <key>");
+            System.exit(1);
+        }
+    }
 }
 
