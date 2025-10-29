@@ -1,5 +1,5 @@
 {
-  "name": "sm2-java-utils",
+  "name": "gm-sm2-cipher",
   "version": "1.0.0",
   "description": "SM2 encryption and decryption utilities using Java with BouncyCastle",
   "main": "lib/index.js",
