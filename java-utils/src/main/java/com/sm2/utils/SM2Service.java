@@ -155,6 +155,7 @@ public class SM2Service {
                 String[] keyPair = generateKeyPair();
                 System.out.println("Private Key: " + keyPair[0]);
                 System.out.println("Public Key: " + keyPair[1]);
+                System.exit(0);
             } catch (Exception e) {
                 System.err.println("Key generation failed: " + e.getMessage());
                 System.exit(1);
@@ -170,13 +171,15 @@ public class SM2Service {
                 SM2Service service = new SM2Service(null, publicKey);
                 String result = service.encrypt(plaintext, publicKey);
                 System.out.println(result);
+                System.exit(0);
             } catch (Exception e) {
                 System.err.println("Encryption failed: " + e.getMessage());
                 System.exit(1);
             }
-        } 
+        }
+        
         // Decryption
-        else if (args.length == 4 && "--decrypt".equals(args[0]) && "--private-key".equals(args[2])) {
+        if (args.length == 4 && "--decrypt".equals(args[0]) && "--private-key".equals(args[2])) {
             String encryptedData = args[1];
             String privateKey = args[3];
             
@@ -184,15 +187,17 @@ public class SM2Service {
                 SM2Service service = new SM2Service(privateKey);
                 String result = service.decrypt(encryptedData);
                 System.out.println(result);
+                System.exit(0);
             } catch (Exception e) {
                 System.err.println("Decryption failed: " + e.getMessage());
                 System.exit(1);
             }
-        } else {
-            System.err.println("Invalid arguments.");
-            System.err.println("Use --test, --encrypt <plaintext> --public-key <key>, or --decrypt <data> --private-key <key>");
-            System.exit(1);
         }
+        
+        // Invalid arguments
+        System.err.println("Invalid arguments.");
+        System.err.println("Use --test, --generate-keypair, --encrypt <plaintext> --public-key <key>, or --decrypt <data> --private-key <key>");
+        System.exit(1);
     }
 }
 
