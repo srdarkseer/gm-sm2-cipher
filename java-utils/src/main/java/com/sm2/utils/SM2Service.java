@@ -162,12 +162,43 @@ public class SM2Service {
             }
         }
 
-        // Encryption
+        // Encryption - raw plaintext
         if (args.length == 4 && "--encrypt".equals(args[0]) && "--public-key".equals(args[2])) {
             String plaintext = args[1];
             String publicKey = args[3];
             
             try {
+                SM2Service service = new SM2Service(null, publicKey);
+                String result = service.encrypt(plaintext, publicKey);
+                System.out.println(result);
+                System.exit(0);
+            } catch (Exception e) {
+                System.err.println("Encryption failed: " + e.getMessage());
+                System.exit(1);
+            }
+        }
+        
+        // Encryption - empty plaintext
+        if (args.length == 3 && "--encrypt-empty".equals(args[0]) && "--public-key".equals(args[1])) {
+            String publicKey = args[2];
+            try {
+                SM2Service service = new SM2Service(null, publicKey);
+                String result = service.encrypt("", publicKey);
+                System.out.println(result);
+                System.exit(0);
+            } catch (Exception e) {
+                System.err.println("Encryption failed: " + e.getMessage());
+                System.exit(1);
+            }
+        }
+        
+        // Encryption - base64 encoded plaintext (handles whitespace reliably)
+        if (args.length == 5 && "--encrypt-b64".equals(args[0]) && "--data".equals(args[1]) && "--public-key".equals(args[3])) {
+            String b64 = args[2];
+            String publicKey = args[4];
+            try {
+                byte[] decoded = java.util.Base64.getDecoder().decode(b64);
+                String plaintext = new String(decoded, java.nio.charset.StandardCharsets.UTF_8);
                 SM2Service service = new SM2Service(null, publicKey);
                 String result = service.encrypt(plaintext, publicKey);
                 System.out.println(result);
@@ -196,7 +227,13 @@ public class SM2Service {
         
         // Invalid arguments
         System.err.println("Invalid arguments.");
-        System.err.println("Use --test, --generate-keypair, --encrypt <plaintext> --public-key <key>, or --decrypt <data> --private-key <key>");
+        System.err.println("Use one of:");
+        System.err.println("  --test");
+        System.err.println("  --generate-keypair");
+        System.err.println("  --encrypt <plaintext> --public-key <key>");
+        System.err.println("  --encrypt-empty --public-key <key>");
+        System.err.println("  --encrypt-b64 --data <base64> --public-key <key>");
+        System.err.println("  --decrypt <data> --private-key <key>");
         System.exit(1);
     }
 }
