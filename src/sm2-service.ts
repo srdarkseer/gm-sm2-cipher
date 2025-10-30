@@ -54,14 +54,21 @@ export class SM2Service {
     }
 
     return new Promise((resolve, reject) => {
-      const javaProcess: ChildProcess = spawn('java', [
-        '-jar',
-        this.javaJarPath,
-        '--encrypt',
-        plaintext,
-        '--public-key',
-        pubKey
-      ]);
+      // Choose safest transport for CLI
+      let args: string[];
+      if (plaintext === '') {
+        // Use dedicated empty mode
+        args = ['-jar', this.javaJarPath, '--encrypt-empty', '--public-key', pubKey];
+      } else if (/^\s+$/.test(plaintext)) {
+        // Whitespace-only: send as base64 to avoid argument parsing quirks
+        const b64 = Buffer.from(plaintext, 'utf8').toString('base64');
+        args = ['-jar', this.javaJarPath, '--encrypt-b64', '--data', b64, '--public-key', pubKey];
+      } else {
+        // Normal case
+        args = ['-jar', this.javaJarPath, '--encrypt', plaintext, '--public-key', pubKey];
+      }
+
+      const javaProcess: ChildProcess = spawn('java', args);
 
       let stdout = '';
       let stderr = '';
