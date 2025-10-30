@@ -62,3 +62,4 @@ temp/
 .m2/
 .mvn/wrapper/maven-wrapper.jar
 .mvn/wrapper/maven-wrapper.properties
+java-utils/dependency-reduced-pom.xml
